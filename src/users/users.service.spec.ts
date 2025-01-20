@@ -7,19 +7,16 @@ import { CreateUserDto } from './dto/create-user.dto';
 
 const userArray: CreateUserDto[] = [
   {
-    login: 'firstName #1',
-    password: 'lastName #1',
+    login: 'clem',
+    password: '$2b$10$NFr0geTDqIAliU2kIRvbr.m5MdWTYzi8WtcMTJfk82xtr5XKWA5Ie', // mySuperPassword
   },
   {
     login: 'firstName #2',
-    password: 'lastName #2',
+    password: '$2b$10$y8PdaL2tHtK/yb9AV63bkeZkGxUKKn9XIKI9f3oclOm16kizKpnDm', // myStrongPassword
   },
 ];
 
-const oneUser: CreateUserDto = {
-  login: 'firstName #1',
-  password: 'lastName #1',
-};
+const oneUser: CreateUserDto = userArray[0];
 
 describe('UsersService', () => {
   let usersService: UsersService;

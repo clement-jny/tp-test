@@ -18,10 +18,7 @@ const userArray: CreateUserDto[] = [
   },
 ];
 
-const oneUser: CreateUserDto = {
-  login: 'clem',
-  password: '$2b$10$NFr0geTDqIAliU2kIRvbr.m5MdWTYzi8WtcMTJfk82xtr5XKWA5Ie', // mySuperPassword
-};
+const oneUser: CreateUserDto = userArray[0];
 
 describe('AuthService', () => {
   let authService: AuthService;
