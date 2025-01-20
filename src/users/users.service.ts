@@ -12,9 +12,15 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
-    this.usersRepository.create(createUserDto);
-    return 'This action adds a new user';
+  create(createUserDto: CreateUserDto): Promise<User> {
+    const user = new User();
+    // user.login = createUserDto.login;
+    // user.password = createUserDto.password;
+    Object.assign(user, createUserDto);
+
+    // return this.usersRepository.save(createUserDto);
+    return this.usersRepository.save(user);
+    // return 'This action adds a new user';
   }
 
   findAll() {

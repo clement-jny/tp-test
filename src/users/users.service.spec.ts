@@ -5,15 +5,32 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 
+const userArray: CreateUserDto[] = [
+  {
+    login: 'firstName #1',
+    password: 'lastName #1',
+  },
+  {
+    login: 'firstName #2',
+    password: 'lastName #2',
+  },
+];
+
+const oneUser: CreateUserDto = {
+  login: 'firstName #1',
+  password: 'lastName #1',
+};
+
 describe('UsersService', () => {
   let usersService: UsersService;
+  let usersRepository: Repository<User>;
 
-  const usersRepository = {
-    create: jest.fn(),
-    save: jest.fn(),
-    // findOne: jest.fn(),
-    // find: jest.fn(),
-  } as unknown as Repository<User>;
+  // const usersRepository = {
+  //   create: jest.fn(),
+  //   save: jest.fn(),
+  //   // findOne: jest.fn(),
+  //   // find: jest.fn(),
+  // } as unknown as Repository<User>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -21,13 +38,19 @@ describe('UsersService', () => {
         UsersService,
         {
           provide: getRepositoryToken(User),
-          useValue: usersRepository,
+          useValue: {
+            find: jest.fn().mockResolvedValue(userArray),
+            findOneBy: jest.fn().mockResolvedValue(oneUser),
+            save: jest.fn().mockResolvedValue(oneUser),
+            remove: jest.fn(),
+            delete: jest.fn(),
+          },
         },
       ],
     }).compile();
 
     usersService = module.get<UsersService>(UsersService);
-    // usersService = new UsersService(usersRepository); // repository as unknown as Repository<User>
+    usersRepository = module.get<Repository<User>>(getRepositoryToken(User));
   });
 
   afterEach(() => jest.clearAllMocks());
@@ -37,7 +60,21 @@ describe('UsersService', () => {
     expect(usersRepository).toBeDefined();
   });
 
-  describe('Create', () => {
+  describe('create()', () => {
+    it('should successfully insert a user', () => {
+      const oneUser: CreateUserDto = {
+        login: 'firstName #1',
+        password: 'lastName #1',
+      };
+
+      expect(
+        usersService.create({
+          login: 'firstName #1',
+          password: 'lastName #1',
+        }),
+      ).resolves.toEqual(oneUser);
+    });
+
     it('should successfully create a new user', () => {
       const createUserDto = new CreateUserDto();
       createUserDto.login = 'testuser';
@@ -45,7 +82,7 @@ describe('UsersService', () => {
 
       usersService.create(createUserDto);
 
-      expect(usersRepository.create).toHaveBeenCalledWith(createUserDto);
+      expect(usersRepository.save).toHaveBeenCalledWith(createUserDto);
 
       //     expect(mockUserRepository.create).toHaveBeenCalledWith(createUserDto);
       //     expect(mockUserRepository.save).toHaveBeenCalledWith(newUser);
