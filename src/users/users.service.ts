@@ -13,6 +13,7 @@ export class UsersService {
   ) {}
 
   create(createUserDto: CreateUserDto) {
+    this.usersRepository.create(createUserDto);
     return 'This action adds a new user';
   }
 
